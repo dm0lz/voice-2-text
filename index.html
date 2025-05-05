@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0"
+    />
+    <meta name="mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <link rel="icon" type="image/x-icon" href="data:image/x-icon;base64,">
+    <script src="./assets/tailwindcss.js"></script>
+    <style>
+      .texture-bg {
+        background-color: #f8fafc;
+        background-image: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23e2e8f0' fill-opacity='0.4'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
+      }
+    </style>
+    <script type="module">
+      import React from 'https://esm.sh/react@18.2.0';
+      import ReactDOM from 'https://esm.sh/react-dom@18.2.0';
+      import htm from 'https://esm.sh/htm@3.1.1';
+      import { useSpeechRecognition } from "./src/hooks/useSpeechRecognition.js";
+      import { MessageList } from "./src/components/MessageList.js";
+      import { MessageInput } from "./src/components/MessageInput.js";
+      import { HeaderControls } from "./src/components/HeaderControls.js";
+      import { getAllEntries, addEntry, removeEntry, initDB } from "./src/utils/db.js";
+
+      (() => {
+        const Index = () => {
+          const html = htm.bind(React.createElement);
+          const [formValue, setFormValue] = React.useState("");
+          const [entries, setEntries] = React.useState([]);
+          const [browserSupport, setBrowserSupport] = React.useState({
+            speech: true,
+            indexedDB: true
+          });
+          
+          const {
+            isRecording,
+            transcripts,
+            startRecording,
+            stopRecording,
+            setTranscripts
+          } = useSpeechRecognition();
+
+          // Check browser support
+          React.useEffect(() => {
+            const checkBrowserSupport = () => {
+              const speechSupport = !!(window.SpeechRecognition || 
+                                    window.webkitSpeechRecognition || 
+                                    window.mozSpeechRecognition || 
+                                    window.msSpeechRecognition);
+              const indexedDBSupport = !!window.indexedDB;
+              
+              setBrowserSupport({
+                speech: speechSupport,
+                indexedDB: indexedDBSupport
+              });
+            };
+            
+            checkBrowserSupport();
+          }, []);
+
+          // Load entries from IndexedDB on component mount
+          React.useEffect(() => {
+            const loadEntries = async () => {
+              try {
+                const storedEntries = await getAllEntries();
+                setEntries(storedEntries);
+              } catch (error) {
+                console.error('Error loading entries:', error);
+              }
+            };
+            loadEntries();
+          }, []);
+
+          React.useEffect(() => {
+            const message = transcripts.pop();
+            if (!message) return;
+            const payload = { timestamp: Date.now(), content: message };
+            handleAddEntry(payload);
+          }, [transcripts]);
+
+          const handleAddEntry = async (entry) => {
+            try {
+              await addEntry(entry);
+              setEntries((entries) => [...entries, entry]);
+            } catch (error) {
+              console.error('Error adding entry:', error);
+            }
+          };
+
+          const handleRemoveEntry = async (e) => {
+            const timestamp = Number(e.target.getAttribute("data-timestamp"));
+            try {
+              await removeEntry(timestamp);
+              setEntries((entries) => {
+                const newEntries = entries.filter((entry) => Number(entry.timestamp) !== timestamp);
+                console.log('Updated entries:', newEntries);
+                return newEntries;
+              });
+            } catch (error) {
+              console.error('Error removing entry:', error);
+            }
+          };
+
+          const handleClearAll = async () => {
+            try {
+              // Clear all entries from IndexedDB
+              const db = await initDB();
+              const tx = db.transaction('entries', 'readwrite');
+              const store = tx.objectStore('entries');
+              await store.clear();
+              
+              // Update state
+              setEntries([]);
+            } catch (error) {
+              console.error('Error clearing entries:', error);
+              alert('Failed to clear messages. Please try again.');
+            }
+          };
+
+          const submitForm = () => {
+            if (!formValue) return;
+            const payload = { timestamp: Date.now(), content: formValue };
+            handleAddEntry(payload);
+            setFormValue("");
+          };
+
+          const formValueChanged = (e) => {
+            setFormValue(e.currentTarget.value);
+          };
+
+          const toggleRecording = () => {
+            if (isRecording) {
+              stopRecording();
+            } else {
+              startRecording();
+            }
+          };
+
+          return html`
+            <section class="container mx-auto min-h-screen flex flex-col">
+              ${(!browserSupport.speech || !browserSupport.indexedDB) && html`
+                <div class="fixed top-0 left-0 right-0 z-20 bg-yellow-100 border-b border-yellow-200 p-4">
+                  <p class="text-yellow-800 text-center">
+                    ${!browserSupport.speech ? 'Speech recognition is not supported in your browser. ' : ''}
+                    ${!browserSupport.indexedDB ? 'Local storage is not supported in your browser. ' : ''}
+                    Some features may not work as expected.
+                  </p>
+                </div>
+              `}
+              <div class="flex-grow"></div>
+              <${HeaderControls}
+                isRecording=${isRecording}
+                onToggleRecording=${toggleRecording}
+                disabled=${!browserSupport.speech}
+                entries=${entries}
+                onClearAll=${handleClearAll}
+              />
+              <div class="flex flex-col justify-end flex-grow">
+                <${MessageList}
+                  entries=${entries}
+                  onRemove=${handleRemoveEntry}
+                />
+              </div>
+              <${MessageInput}
+                value=${formValue}
+                onChange=${formValueChanged}
+                onSubmit=${submitForm}
+              />
+            </section>
+          `;
+        };
+        ReactDOM.render(
+          React.createElement(Index),
+          document.getElementById("root")
+        );
+      })();
+    </script>
+  </head>
+  <body class="texture-bg">
+    <div id="root"></div>
+  </body>
+</html>
