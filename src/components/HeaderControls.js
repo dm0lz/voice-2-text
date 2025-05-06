@@ -56,13 +56,19 @@ export const HeaderControls = ({
       <div class="max-w-2xl mx-auto px-4 py-3 flex items-center justify-between">
         <div class="flex items-center space-x-3 flex-1">
           <div class="relative">
-            <svg class="w-10 h-10 text-blue-600" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-              <path d="M4 14h2v6H4z" fill="currentColor"/>
-              <path d="M8 6h2v14H8z" fill="currentColor"/>
-              <path d="M12 8h2v12h-2z" fill="currentColor"/>
-              <path d="M16 4h2v16h-2z" fill="currentColor"/>
-              <path d="M20 10h2v10h-2z" fill="currentColor"/>
-            </svg>
+            <button
+              onClick=${() => window.location.href = '/'}
+              class="p-2 rounded-full hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-blue-400 transition-colors"
+              title="Go to home"
+            >
+              <svg class="w-10 h-10 text-blue-600" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <path d="M4 14h2v6H4z" fill="currentColor"/>
+                <path d="M8 6h2v14H8z" fill="currentColor"/>
+                <path d="M12 8h2v12h-2z" fill="currentColor"/>
+                <path d="M16 4h2v16h-2z" fill="currentColor"/>
+                <path d="M20 10h2v10h-2z" fill="currentColor"/>
+              </svg>
+            </button>
           </div>
         </div>
         <div class="flex-1 flex justify-end">
