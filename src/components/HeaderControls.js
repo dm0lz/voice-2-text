@@ -11,6 +11,7 @@ export const HeaderControls = ({
 }) => {
   const html = htm.bind(React.createElement);
   const [isMenuOpen, setIsMenuOpen] = React.useState(false);
+  const [isAboutOpen, setIsAboutOpen] = React.useState(false);
 
   const getButtonTitle = () => {
     if (!disabled) return '';
@@ -86,6 +87,18 @@ export const HeaderControls = ({
             ${isMenuOpen && html`
               <div class="absolute right-0 mt-2 w-48 rounded-md shadow-lg bg-white ring-1 ring-black ring-opacity-5 focus:outline-none">
                 <div class="py-1">
+                  <button
+                    onClick=${() => {
+                      setIsAboutOpen(true);
+                      setIsMenuOpen(false);
+                    }}
+                    class="w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-50 flex items-center space-x-2"
+                  >
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                    </svg>
+                    <span>About</span>
+                  </button>
                   ${entries.length > 0 && html`
                     <button
                       onClick=${handleClearAll}
@@ -142,5 +155,64 @@ export const HeaderControls = ({
         </div>
       </div>
     </header>
+
+    ${isAboutOpen && html`
+      <div
+        class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4"
+        onClick=${() => setIsAboutOpen(false)}
+      >
+        <div
+          class="bg-white rounded-lg p-4 sm:p-6 max-w-md w-full shadow-lg relative max-h-[90vh] overflow-y-auto"
+          onClick=${(e) => e.stopPropagation()}
+        >
+          <button
+            onClick=${() => setIsAboutOpen(false)}
+            class="absolute top-2 right-2 sm:top-3 sm:right-3 w-8 h-8 flex items-center justify-center rounded-full hover:bg-gray-100 text-gray-500 hover:text-gray-700 transition-colors"
+            title="Close"
+          >
+            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+            </svg>
+          </button>
+          <h2 class="text-xl sm:text-2xl font-bold mb-3 sm:mb-4 pr-8">About This App</h2>
+          <div class="space-y-3 sm:space-y-4">
+            <p class="text-sm sm:text-base">
+              Welcome to Voice 2 Text - a powerful, privacy-focused speech recognition tool that converts your voice into text in real-time. This app is completely free to use with no limitations or hidden costs.
+            </p>
+            
+            <div>
+              <h3 class="font-semibold text-base sm:text-lg mb-2">How It Works</h3>
+              <ul class="list-disc list-inside space-y-1 sm:space-y-2 text-sm sm:text-base text-gray-700">
+                <li>Uses Google's Speech Recognition API for accurate voice-to-text conversion</li>
+                <li>Real-time transcription with continuous recording capability</li>
+                <li>All data is stored locally in your browser using IndexedDB</li>
+                <li>No server-side storage - your conversations stay private</li>
+                <li>Download your conversation history as JSON at any time</li>
+              </ul>
+            </div>
+
+            <div>
+              <h3 class="font-semibold text-base sm:text-lg mb-2">Privacy & Security</h3>
+              <p class="text-sm sm:text-base text-gray-700">
+                Your privacy is our priority. All voice processing happens in your browser, and your data never leaves your device. You have full control over your conversation history - delete individual messages or clear all data at any time.
+              </p>
+            </div>
+
+            <div>
+              <h3 class="font-semibold text-base sm:text-lg mb-2">Features</h3>
+              <ul class="list-disc list-inside space-y-1 sm:space-y-2 text-sm sm:text-base text-gray-700">
+                <li>Unlimited voice recording and transcription</li>
+                <li>Manual text input option</li>
+                <li>Message history with timestamps</li>
+                <li>Export functionality for your conversations</li>
+                <li>Responsive design for all devices</li>
+              </ul>
+            </div>
+
+            <p class="text-xs sm:text-sm text-gray-500 mt-4 sm:mt-6">© 2025 Voice 2 Text - Your Privacy-First Speech Recognition Tool</p>
+          </div>
+        </div>
+      </div>
+    `}
   `;
 }; 
