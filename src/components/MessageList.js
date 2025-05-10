@@ -19,14 +19,14 @@ export const MessageList = ({ entries, onRemove }) => {
   };
 
   return html`
-    <div class="flex flex-col gap-4 px-2 pb-32 pt-24 max-w-2xl mx-auto">
+    <div class="flex flex-col gap-4 px-2 pb-32 pt-24 max-w-2xl mx-auto px-3">
       ${entries.map((entry, idx) => {
         const isUser = true; // All messages are user for now
         return html`
           <div class="flex ${isUser ? 'justify-end' : 'justify-start'} group">
             <div class="relative max-w-[100%]">
               <div class="rounded-2xl px-5 py-3 shadow-md transition-all duration-200
-                ${isUser ? 'bg-red-50 text-gray-600' : 'bg-gray-200 text-gray-800'}">
+                ${isUser ? 'bg-gray-50 text-gray-600' : 'bg-gray-200 text-gray-800'}">
                 <p class="break-words">${entry.content}</p>
                 <span class="block text-xs text-gray-400 mt-2 text-right select-none">
                   ${new Date(parseInt(entry.timestamp)).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}

@@ -10,7 +10,7 @@ export const MessageInput = ({ value, onChange, onSubmit }) => {
         e.preventDefault();
         onSubmit();
       }}
-      class="fixed bottom-0 left-0 right-0 z-10 bg-black border-t shadow-lg px-4 py-3 flex justify-center"
+      class="fixed bottom-0 left-0 right-0 z-10 bg-gray-50 border-t shadow-lg px-4 py-3 flex justify-center"
     >
       <div class="flex w-full max-w-2xl gap-2">
         <input
