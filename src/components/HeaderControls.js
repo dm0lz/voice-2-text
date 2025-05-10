@@ -52,16 +52,16 @@ export const HeaderControls = ({
   }, [isMenuOpen]);
 
   return html`
-    <header class="fixed top-0 left-0 right-0 z-10 bg-white shadow-md">
+    <header class="fixed top-0 left-0 right-0 z-10 bg-black shadow-md">
       <div class="max-w-2xl mx-auto px-4 py-3 flex items-center justify-between">
         <div class="flex items-center space-x-3 flex-1">
           <div class="relative">
             <button
               onClick=${() => window.location.href = '/'}
-              class="p-2 rounded-full hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-blue-400 transition-colors"
+              class="p-2 rounded-full hover:bg-gray-100 focus:outline-none"
               title="Go to home"
             >
-              <svg class="w-10 h-10 text-blue-600" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <svg class="w-10 h-10 text-red-500" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
                 <path d="M4 14h2v6H4z" fill="currentColor"/>
                 <path d="M8 6h2v14H8z" fill="currentColor"/>
                 <path d="M12 8h2v12h-2z" fill="currentColor"/>
@@ -71,7 +71,7 @@ export const HeaderControls = ({
             </button>
           </div>
         </div>
-        <div class="flex-1 flex justify-end">
+        <div class="flex-1 flex justify-end hidden sm:flex mr-3">
           ${isRecording && html`
             <div class="flex items-center space-x-2">
               <div class="w-3 h-3 bg-red-500 rounded-full animate-pulse"></div>
@@ -83,10 +83,10 @@ export const HeaderControls = ({
           <div class="relative menu-container">
             <button
               onClick=${() => setIsMenuOpen(!isMenuOpen)}
-              class="p-2 rounded-full hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-blue-400"
+              class="p-2 rounded-full bg-gray-700 focus:outline-none"
               title="More options"
             >
-              <svg class="w-6 h-6 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <svg class="w-6 h-6 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 5v.01M12 12v.01M12 19v.01M12 6a1 1 0 110-2 1 1 0 010 2zm0 7a1 1 0 110-2 1 1 0 010 2zm0 7a1 1 0 110-2 1 1 0 010 2z" />
               </svg>
             </button>
@@ -134,10 +134,10 @@ export const HeaderControls = ({
           <button
             onClick=${onToggleRecording}
             disabled=${disabled}
-            class="relative group px-6 py-2.5 rounded-full font-semibold transition-all duration-300 focus:outline-none focus:ring-2 focus:ring-blue-400 shadow-sm
+            class="relative group px-6 py-2.5 rounded-full font-semibold transition-all duration-300 focus:outline-none shadow-sm
               ${disabled ? 'bg-gray-300 cursor-not-allowed' : 
-                isRecording ? 'bg-red-500 hover:bg-red-600 text-white shadow-lg shadow-red-200' : 
-                'bg-blue-500 hover:bg-blue-600 text-white shadow-lg shadow-blue-200'}"
+                isRecording ? 'bg-yellow-500 hover:bg-yellow-600 text-white shadow-lg shadow-red-200' : 
+                'bg-red-500 hover:bg-red-600 text-white shadow-lg shadow-blue-200'}"
             title=${getButtonTitle()}
           >
             <div class="flex items-center space-x-2 whitespace-nowrap">

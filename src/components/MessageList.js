@@ -26,7 +26,7 @@ export const MessageList = ({ entries, onRemove }) => {
           <div class="flex ${isUser ? 'justify-end' : 'justify-start'} group">
             <div class="relative max-w-[100%]">
               <div class="rounded-2xl px-5 py-3 shadow-md transition-all duration-200
-                ${isUser ? 'bg-blue-100 text-blue-900' : 'bg-gray-200 text-gray-800'}">
+                ${isUser ? 'bg-red-50 text-gray-600' : 'bg-gray-200 text-gray-800'}">
                 <p class="break-words">${entry.content}</p>
                 <span class="block text-xs text-gray-400 mt-2 text-right select-none">
                   ${new Date(parseInt(entry.timestamp)).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
