@@ -25,20 +25,20 @@ export const MessageList = ({ entries, onRemove }) => {
         return html`
           <div class="flex ${isUser ? 'justify-end' : 'justify-start'} group">
             <div class="relative max-w-[100%]">
-              <div class="rounded-2xl px-5 py-3 shadow-lg transition-all duration-200
-                ${isUser ? 'bg-blue-500/20 text-blue-100 backdrop-blur-sm border border-blue-500/30' : 'bg-dark-800 text-dark-100 border border-dark-700'}">
+              <div class="rounded-2xl px-5 py-3 shadow-md transition-all duration-200
+                ${isUser ? 'bg-blue-100 text-blue-900' : 'bg-gray-200 text-gray-800'}">
                 <p class="break-words">${entry.content}</p>
-                <span class="block text-xs text-dark-400 mt-2 text-right select-none">
+                <span class="block text-xs text-gray-400 mt-2 text-right select-none">
                   ${new Date(parseInt(entry.timestamp)).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
                 </span>
               </div>
               <button
-                class="absolute -right-3 -top-3 opacity-0 group-hover:opacity-100 transition-opacity bg-dark-800 border border-dark-700 rounded-full p-1 shadow-lg hover:bg-red-500/20"
+                class="absolute -right-3 -top-3 opacity-0 group-hover:opacity-100 transition-opacity bg-white border border-gray-300 rounded-full p-1 shadow hover:bg-red-100"
                 onClick=${handleRemove}
                 data-timestamp=${entry.timestamp}
                 title="Remove"
               >
-                <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 text-red-400" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" /></svg>
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 text-red-500" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" /></svg>
               </button>
             </div>
           </div>
