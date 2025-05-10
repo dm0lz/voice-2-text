@@ -47,4 +47,4 @@ export const MessageList = ({ entries, onRemove }) => {
       <div ref=${messagesEndRef} />
     </div>
   `;
-}; 
+};

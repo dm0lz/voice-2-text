@@ -29,4 +29,4 @@ export const MessageInput = ({ value, onChange, onSubmit }) => {
       </div>
     </form>
   `;
-}; 
+};
