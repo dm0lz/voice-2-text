@@ -24,16 +24,34 @@ export const useSpeechRecognition = () => {
     recognition.interimResults = true;
 
     recognition.onresult = (event) => {
+      let interimCombined = "";
+
       Array.from(event.results).forEach((result) => {
+        const transcript = result[0].transcript.trim();
+
         if (result.isFinal) {
-          const transcript = result[0].transcript.trim();
+          // Deduplicate final transcripts
           if (!lastResultsRef.current.includes(transcript)) {
-            setTranscripts(prev => [...prev, transcript]);
+            setTranscripts(prev => [...prev, { text: transcript, isFinal: true }]);
+            lastResultsRef.current.push(transcript);
+            lastResultsRef.current.shift();
           }
-          lastResultsRef.current.push(transcript);
-          lastResultsRef.current.shift();
+        } else {
+          interimCombined += transcript + " ";
         }
       });
+
+      interimCombined = interimCombined.trim();
+      if (interimCombined) {
+        // Push a single aggregated interim result (isFinal: false)
+        setTranscripts(prev => {
+          // Avoid spamming identical interim results
+          if (prev.length && !prev[prev.length - 1].isFinal && prev[prev.length - 1].text === interimCombined) {
+            return prev;
+          }
+          return [...prev, { text: interimCombined, isFinal: false }];
+        });
+      }
     };
 
     recognition.onerror = (event) => {

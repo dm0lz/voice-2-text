@@ -52,6 +52,9 @@
             setTranscripts
           } = useSpeechRecognition();
 
+          // Holds the in-progress (interim) transcript while the user is speaking.
+          const [liveEntry, setLiveEntry] = React.useState(null);
+
           // Check browser support
           React.useEffect(() => {
             const checkBrowserSupport = () => {
@@ -83,11 +86,25 @@
             loadEntries();
           }, []);
 
+          // Listen for new transcripts coming from the speech-recognition hook.
+          // We receive objects of the shape { text, isFinal }.
           React.useEffect(() => {
-            const message = transcripts.pop();
-            if (!message) return;
-            const payload = { timestamp: Date.now(), content: message };
-            handleAddEntry(payload);
+            if (!transcripts.length) return;
+
+            const { text, isFinal } = transcripts[transcripts.length - 1];
+
+            if (!text) return;
+
+            if (isFinal) {
+              // Commit the final text to the persistent chat history.
+              const payload = { timestamp: Date.now(), content: text };
+              handleAddEntry(payload);
+              // Clear any live entry that might have been showing.
+              setLiveEntry(null);
+            } else {
+              // Simply show the latest aggregated interim transcript.
+              setLiveEntry({ timestamp: 'live', content: text, isLive: true });
+            }
           }, [transcripts]);
 
           const handleAddEntry = async (entry) => {
@@ -169,7 +186,7 @@
               />
               <div class="flex flex-col justify-end flex-grow">
                 <${MessageList}
-                  entries=${entries}
+                  entries=${liveEntry ? [...entries, liveEntry] : entries}
                   onRemove=${handleRemoveEntry}
                 />
               </div>

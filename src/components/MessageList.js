@@ -29,17 +29,19 @@ export const MessageList = ({ entries, onRemove }) => {
                 ${isUser ? 'bg-gray-50 text-gray-600' : 'bg-gray-200 text-gray-800'}">
                 <p class="break-words">${entry.content}</p>
                 <span class="block text-xs text-gray-400 mt-2 text-right select-none">
-                  ${new Date(parseInt(entry.timestamp)).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
+                  ${entry.isLive ? '...' : new Date(parseInt(entry.timestamp)).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
                 </span>
               </div>
-              <button
-                class="absolute -right-3 -top-3 opacity-0 group-hover:opacity-100 transition-opacity bg-white border border-gray-300 rounded-full p-1 shadow hover:bg-red-100"
-                onClick=${handleRemove}
-                data-timestamp=${entry.timestamp}
-                title="Remove"
-              >
-                <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 text-red-500" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" /></svg>
-              </button>
+              ${!entry.isLive && html`
+                <button
+                  class="absolute -right-3 -top-3 opacity-0 group-hover:opacity-100 transition-opacity bg-white border border-gray-300 rounded-full p-1 shadow hover:bg-red-100"
+                  onClick=${handleRemove}
+                  data-timestamp=${entry.timestamp}
+                  title="Remove"
+                >
+                  <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 text-red-500" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" /></svg>
+                </button>
+              `}
             </div>
           </div>
         `;
